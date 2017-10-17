@@ -4,6 +4,7 @@
 # Settings
 MAKEFILES=Makefile $(wildcard *.mk)
 JEKYLL=jekyll
+#JEKYLL=docker run --rm -v $(CURDIR):/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll
 PARSER=bin/markdown_ast.rb
 DST=_site
 
