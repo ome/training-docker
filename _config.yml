@@ -6,7 +6,7 @@
 carpentry: "swc"
 
 # Overall title for pages.
-title: "Lesson Title"
+title: "Docker Carpentry"
 
 # Contact email address.
 contact: "mailto:lessons@software-carpentry.org"
@@ -44,7 +44,7 @@ kind: "lesson"
 repository: <USERNAME>/<PROJECT>
 
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am)
-start_time: 0
+start_time: 600
 
 # Specify that things in the episodes collection should be output.
 collections:
