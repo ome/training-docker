@@ -1,7 +1,7 @@
 ---
 title: "Creating new Docker images"
-teaching: 10-15
-exercises: 10-15
+teaching: 15
+exercises: 15
 questions:
 - "How can you create your own Docker image?"
 objectives:

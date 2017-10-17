@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Orchestration"
-teaching: 15-20
-exercises: 15-20
+teaching: 20
+exercises: 20
 questions:
 - "How should I manage applications with multiple components"
 objectives:

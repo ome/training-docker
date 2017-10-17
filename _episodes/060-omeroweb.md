@@ -1,7 +1,7 @@
 ---
 title: "Run OMERO.web in Docker"
-teaching: 10-15
-exercises: 20-25
+teaching: 10
+exercises: 25
 questions:
 - "How can I run OMERO.web in Docker"
 objectives:

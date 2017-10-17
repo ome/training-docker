@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Docker"
-teaching: 10-20
+teaching: 20
 exercises: 0
 questions:
 - "What is Docker?"

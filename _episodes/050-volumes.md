@@ -1,7 +1,7 @@
 ---
 title: "Using Docker volumes"
-teaching: 15-20
-exercises: 20-25
+teaching: 15
+exercises: 15
 questions:
 - "What is the lifetime of a Docker container?"
 - "Where can I store and access data?"

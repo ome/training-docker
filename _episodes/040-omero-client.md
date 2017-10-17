@@ -1,7 +1,7 @@
 ---
 title: "Run an OMERO client in Docker"
-teaching: 10-15
-exercises: 20-25
+teaching: 10
+exercises: 25
 questions:
 - "How do I create a Docker image for a complex application?"
 - "How can you run it?"

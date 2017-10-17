@@ -1,7 +1,7 @@
 ---
 title: "Running Docker images"
-teaching: X
-exercises: X
+teaching: 15
+exercises: 15
 questions:
 - "How do you run an image?"
 - "How can you access it?"
