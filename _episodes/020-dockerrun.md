@@ -17,28 +17,34 @@ This is an introduction to running and accessing pre-built Docker images.
 
 ## Running Docker images interactively
 
+First fetch an image:
+~~~
+docker pull centos:7
+~~~
+{: .bash}
+~~~
+7: Pulling from library/centos
+Digest: sha256:eba772bac22c86d7d6e72421b4700c3f894ab6e35475a34014ff8de74c10872e
+Status: Downloaded newer image for centos:7
+~~~
+{: .output}
+- `centos`: The name of the Docker image that you want to run
+- `:7`: The version/tag of the Docker image (default is `:latest`)
+
+Then run it:
 ~~~
 docker run -it centos:7 bash
 ~~~
 {: .bash}
-
 ~~~
-Unable to find image 'centos:7' locally
-7: Pulling from library/centos
-Digest: sha256:eba772bac22c86d7d6e72421b4700c3f894ab6e35475a34014ff8de74c10872e
-Status: Downloaded newer image for centos:7
 [root@3b02ac0aebba /]#
 ~~~
 {: .output}
 
 You now have a bash shell inside your Docker container.
 
-- `run`: Runs an existing Docker image, downloads it if necessary.
 - `-it`: Run "interactively"
-- `centos`: The name of the Docker image that you want to run
-- `:7`: The version/tag of the Docker image (default is `:latest`)
-- `bash`: The arguments to pass to the Docker image (most images have a default)
-
+- `bash`: The arguments to pass to the Docker image (most images have a default so this can often be omitted)
 
 Make some changes inside the container:
 ~~~
@@ -54,13 +60,17 @@ dev                home       lost+found  opt    run   sys   var
 ~~~
 {: .output}
 
-And exit:
+The default user in the `centos` image is `root`, so you can install things:
+~~~
+yum install -y wget
+~~~
+{: .bash}
 
+Exit the container:
 ~~~
 exit
 ~~~
 {: .bash}
-
 
 Now run the same command again:
 ~~~
@@ -80,7 +90,7 @@ dev                lib   media       proc  sbin  tmp
 ~~~
 {: .output}
 
-`hello.txt` is missing- this is a completely new container.
+`hello.txt` is missing. This is a completely new container.
 
 
 ## Running Docker images in the background (`-d`/`--detach`)
@@ -260,7 +270,7 @@ docker logs my-nginx
 > > ~~~
 > > docker logs -f my-nginx
 > > ~~~
-> > {: .output}
+> > {: .bash}
 > {: .solution}
 {: .challenge}
 
