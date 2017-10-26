@@ -218,6 +218,62 @@ d8339aacac4c        bridge              bridge              local
 {: .output}
 
 
+## Persistent data
+
+Docker containers should not contain any important state, such as the OMERO and PostgreSQL data directories. Instead you should use [volumes](https://docs.docker.com/engine/admin/volumes/volumes/) which provide an abstraction of a file-system.
+
+You will usually need to consult the documentation for the Docker images you are using to find out where persistent data is stored. A well written Dockerfile should use the `VOLUME` command to indicate the locations of persistent data. When you run a container Docker automatically creates volumes for you.
+
+~~~
+docker volume ls
+~~~
+{: .bash}
+~~~
+DRIVER              VOLUME NAME
+local               11b5de6192a4ff33d543fab74c974d45818291b17ab645aa6b8c2476d1945b1d
+local               ad1226f1baaa3a2c3075cff363d0e6957b1f254dfa55ffcbd0b7927af30f3699
+local               b1f172df2a2ccc260185030a3eed570ebfd86be617166c038a57793a3df54ebf
+...
+~~~
+{: .output}
+
+The default volume names aren't very useful, but can give a volume a name if you create it yourself.
+
+### Using volumes with OMERO
+
+First delete the existing omero and database containers (keep the standalone web container running):
+~~~
+docker stop my-omero-server my-db-server my-omero-web
+docker rm my-omero-server my-db-server my-omero-web
+~~~
+{: .bash}
+
+Create data volumes for the PostgreSQL and OMERO data directories:
+~~~
+docker volume create my-db-data
+docker volume create my-omero-data
+~~~
+{: .bash}
+
+When you run an image you can mount a docker volume into the container using the `--mount` argument. Mount `my-db-data` on `/var/lib/postgresql/data` when running PostgreSQL:
+~~~
+docker run -d --name my-db-server --mount source=my-db-data,target=/var/lib/postgresql/data --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:9.6
+~~~
+{: .bash}
+If you are using an old version of Docker replace the `--mount ...` argument with `-v my-db-data:/var/lib/postgresql/data`.
+
+Mount `my-omero-data` on `/OMERO` when running OMERO.server:
+~~~
+docker run -d --name my-omero-server --mount source=my-omero-data,target=/OMERO --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.4.0
+~~~
+{: .bash}
+If you are using an old version of Docker replace the `--mount ...` argument with `-v my-omero-data:/OMERO`.
+
+> ## `-v` and  `--mount`
+>
+> `--mount` is a new argument introduced in version 17.06. Docker recommend using `--mount` instead of `-v`, though both methods are mostly equivalent.
+{: .callout}
+
 ## Additional notes
 
 - There are [multiple types of network](https://docs.docker.com/engine/userguide/networking/#bridge-networks), for instance to allow container running on different hosts to communicate. In most cases the default type (`bridge`) is fine.
