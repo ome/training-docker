@@ -1,7 +1,7 @@
 ---
 title: "Official OMERO images"
-teaching: 10
-exercises: 25
+teaching: 20
+exercises: 30
 questions:
 - "How do I run a multi-container application such as OMERO?"
 objectives:
@@ -11,6 +11,7 @@ keypoints:
 - "Use docker networks to isolate an application, and to provide name-based lookups"
 - "The official OMERO Docker images can be configured by defining environment variables to set most omero properties"
 - "The OMERO.server image magically takes care of initialising and upgrading the database"
+- "Use Docker volumes to store persistent data such as the OMERO database and data directory"
 ---
 
 The previous lessons built up a Dockerfile from scratch.
