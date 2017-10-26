@@ -1,24 +1,27 @@
 ---
-title: "Introduction to Orchestration"
+title: "Orchestration with Docker Compose"
 teaching: 20
 exercises: 20
 questions:
-- "How should I manage applications with multiple components"
+- "How can I manage applications with multiple components"
 objectives:
-- "Use Docker compose to manage an OMERO installation"
+- "Use Docker compose to deploy an OMERO installation"
 keypoints:
 ---
 
 Docker compose (and other orchestration tools) make it easier to deploy applications consisting of multiple Docker containers.
 
-## Database
 Docker compose deploys an application described by a YAML file. There are multiple versions of the docker-compose format/schema. This example uses version 3.
+
+
+## Database
 
 Start by creating a `docker-compose.yml` file for just PostgreSQL, including a private network and data volume:
 ~~~
 version: "3"
 
 services:
+
   database:
     image: "postgres:9.6"
     environment:
@@ -60,6 +63,7 @@ Next add `omeroserver` to the `services` and `omero-volume` to `volumes`:
 version: "3"
 
 services:
+
   database:
     image: "postgres:9.6"
     environment:
@@ -70,6 +74,7 @@ services:
       - omero-network
     volumes:
       - "database-volume:/var/lib/postgresql/data"
+
   omeroserver:
     image: "openmicroscopy/omero-server:5.4.0"
     environment:
@@ -106,6 +111,7 @@ Finally add `omero-web` to `services`:
 version: "3"
 
 services:
+
   database:
     image: "postgres:9.6"
     environment:
@@ -116,6 +122,7 @@ services:
       - omero-network
     volumes:
       - "database-volume:/var/lib/postgresql/data"
+
   omeroserver:
     image: "openmicroscopy/omero-server:5.4.0"
     environment:
@@ -131,6 +138,7 @@ services:
       - "4064:4064"
     volumes:
       - "omero-volume:/OMERO"
+
   omeroweb:
     image: "openmicroscopy/omero-web-standalone:master"
     environment:
@@ -156,5 +164,23 @@ docker-compose up
 and you should be able to log in to OMERO.web at [http://localhost:4080](http://localhost:4080).
 
 If you are feeling lazy you can [download the complete docker-compose.yml file](../code/docker-compose/docker-compose.yml)
+
+> ## Modifying the OMERO configuration
+>
+> Modify `docker-compose.yml` to include some non-default configuration, for example enable a public user in OMERO.web
+>
+> > ## Solution
+> >
+> > Add the following to the `omeroweb` `environment`:
+> > ~~~
+> > - CONFIG_omero_web_public_enabled=True
+> > - CONFIG_omero_web_public_user=root
+> > - CONFIG_omero_web_public_password=omero-root-password
+> > - CONFIG_omero_web_public_url__filter=^/
+> > ~~~
+> > {: .bash}
+> > This is intended to be a quick example, you should obviously avoid using `root` as your public user in production.
+> {: .solution}
+{: .challenge}
 
 {% include links.md %}

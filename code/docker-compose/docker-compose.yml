@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+
   database:
     image: "postgres:9.6"
     environment:
@@ -11,6 +12,7 @@ services:
       - omero-network
     volumes:
       - "database-volume:/var/lib/postgresql/data"
+
   omeroserver:
     image: "openmicroscopy/omero-server:5.4.0"
     environment:
@@ -26,6 +28,7 @@ services:
       - "4064:4064"
     volumes:
       - "omero-volume:/OMERO"
+
   omeroweb:
     image: "openmicroscopy/omero-web-standalone:master"
     environment:
