@@ -13,20 +13,9 @@ This builds on previous lessons to create an OMERO.web image running in developm
 
 Start with the image built in the previous lesson
 ~~~
-docker run -it my-omeropy-image
+docker run -it my-omeropy-image omero web start
 ~~~
 {: .bash}
-~~~
-OMERO Python Shell. Version 5.4.0-ice36-b74
-Type "help" for more information, "quit" or Ctrl-D to exit
-omero>
-~~~
-{: .output}
-Try starting web:
-~~~
-omero> web start
-~~~
-{: .source}
 ~~~
 ERROR: Django not installed!
 omero>
@@ -52,9 +41,10 @@ omero>
 It would be nice if OMERO.web could automatically run when the container is started, instead of requiring a manual step.
 The `CMD` line can be changed to do this:
 ~~~
-CMD ["/opt/omero/OMERO.py/bin/omero", "web", "start", "--foreground"]
+CMD ["/home/omero/OMERO.py/bin/omero", "web", "start", "--foreground"]
 ~~~
 {: .source}
+The `--foreground` flag is necessary because OMERO.web defaults to running in the background as a daemon, but Docker will exit as soon as the foreground process completes.
 
 Build the updated docker image, and run it.
 OMERO.web listens on port 4080 be default, so forward this:

@@ -78,17 +78,38 @@ omero>
 
 This time you enter the OMERO shell directly.
 
-Try starting web:
+Can you pass command-line arguments?
 ~~~
-omero> web start
+docker run -it my-omeropy-image version
 ~~~
-{: .source}
+{: .bash}
 ~~~
-ERROR: Django not installed!
-omero>
+docker: Error response from daemon: oci runtime error: container_linux.go:265: starting container process caused "exec: \"version\": executable file not found in $PATH".
+~~~
+{: .output}
+If you pass a command line to `docker run` it overwrites the default, so you need to explicitly include `/home/omero/OMERO.py/bin/omero`:
+~~~
+docker run -it my-omeropy-image /home/omero/OMERO.py/bin/omero version
+~~~
+{: .bash}
+~~~
+5.4.0-ice36-b74
 ~~~
 {: .output}
 
+This can be made more user-friendly by adding `/home/omero/OMERO.py/` to the `PATH` in the image using the Dockerilfe `ENV` command:
+~~~
+ENV PATH="/home/omero/OMERO.py/bin:${PATH}"
+~~~
+{: .source}
+~~~
+docker run -it my-omeropy-image omero version
+~~~
+{: .bash}
+~~~
+5.4.0-ice36-b74
+~~~
+{: .output}
 
 
 > ## Advanced: Compile and install Ice

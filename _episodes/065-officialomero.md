@@ -3,11 +3,14 @@ title: "Official OMERO images"
 teaching: 10
 exercises: 25
 questions:
-- "How do I run a multi-container application?"
-- "How should I run OMERO Docker in production?"
+- "How do I run a multi-container application such as OMERO?"
 objectives:
-- "Know how to use the official OMERO Docker images."
+- "Create a segregated Docker network"
+- "Run the official OMERO Docker images."
 keypoints:
+- "Use docker networks to isolate an application, and to provide name-based lookups"
+- "The official OMERO Docker images can be configured by defining environment variables to set most omero properties"
+- "The OMERO.server image magically takes care of initialising and upgrading the database"
 ---
 
 The previous lessons built up a Dockerfile from scratch.
@@ -19,40 +22,15 @@ The official OMERO Docker images are built with Ansible, primarily because we ne
 Using Ansible means only one set of instructions has to be maintained.
 
 
-## Running production OMERO.server
+## Running OMERO.server
 
 Pull all the required images:
-
 ~~~
 docker pull openmicroscopy/omero-server:5.4.0
-~~~
-{: .bash}
-~~~
-5.4.0: Pulling from openmicroscopy/omero-server
-Digest: sha256:4dcfb9b7612144c750ffccfffb743bcd1265d513838bb96fdc86e41a75447740
-Status: Image is up to date for openmicroscopy/omero-server:5.4.0
-~~~
-{: .output}
-~~~
 docker pull openmicroscopy/omero-web:5.4.0
-~~~
-{: .bash}
-~~~
-5.4.0: Pulling from openmicroscopy/omero-web
-Digest: sha256:31ea4c1d0bb329a32a9223c9be4352903865c1eb3cd28faf2f35fad5792415a8
-Status: Image is up to date for openmicroscopy/omero-web:5.4.0
-~~~
-{: .output}
-~~~
 docker pull postgres:9.6
 ~~~
 {: .bash}
-~~~
-9.6: Pulling from library/postgres
-Digest: sha256:318757ed6291e6a1ef86312ac453b9b4a67b48495b59ca2dece909cb0c688c53
-Status: Image is up to date for postgres:9.6
-~~~
-{: .output}
 
 ### Database and Networking
 
@@ -61,6 +39,8 @@ A naive way to join containers together is to use port forwarding, and configure
 Instead you can create a separate Docker network for you application. This ensures:
 - only containers within the same network can talk to each other (unless you forward a port)
 - Docker runs an internal DNS server that lets you reference other images by name
+
+If you do not specify a network Docker provides a default network, but this does not support communication between containers.
 
 Create a new network:
 ~~~
@@ -78,9 +58,11 @@ docker run -d --name my-db-server --network my-omero-network -e POSTGRES_USER=om
 ~~~
 {: .bash}
 
-This will set a password on the default `postgres` user and database. If you want to create a separate user and database see the [documentation on Docker Hub](https://hub.docker.com/_/postgres/).
+The container is configured by defining environment variables with the `-e` parameter.
+The above example creates a user and database named `omero`, and sets a password. See the [documentation on Docker Hub](https://hub.docker.com/_/postgres/) for more parameters.
 
-You can check the DNS resolution by attempting to ping my-db-server from another container outside or inside the network you created:
+You can check the DNS resolution by attempting to ping my-db-server from another container.
+First try from a container on the default docker network:
 ~~~
 docker run -it --rm centos ping my-db-server
 ~~~
@@ -89,7 +71,7 @@ docker run -it --rm centos ping my-db-server
 ping: my-test-db-server: Name or service not known
 ~~~
 {: .output}
-
+Then try it on the network you created:
 ~~~
 docker run -it --rm --network my-omero-network centos ping my-db-server
 ~~~
@@ -104,6 +86,11 @@ PING my-db-server (172.18.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.082/0.102/0.122/0.020 ms
 ~~~
 {: .output}
+
+> ## Docker links
+>
+> Older versions of docker used the `--link` argument to link containers together. This is deprecated; you should use networks instead.
+{: .callout}
 
 ### OMERO.server
 
@@ -139,9 +126,12 @@ No descriptor given. Using etc/grid/default.xml
 {: .output}
 You should now have a functional OMERO.server.
 
-Since this is a new PostgreSQL server an OMERO database didn't exist, so it was initialised automatically. If an old version of the database (e.g. corresponding to OMERO 5.3) was present it would've been automatically upgraded.
+Ports `4063` and `4064` are forwarded, so you can login as the OMERO `root` user from an OMERO.client on your machine.
 
-Ports 4063 and 4064 are forwarded, so you should be able to login as `root` from an OMERO.client on your machine.
+> ## Database initialisation and upgrades
+>
+> Since this is a new PostgreSQL server an OMERO database didn't exist, so it was initialised automatically. If an old version of the database (e.g. OMERO 5.3) was present it would be automatically upgraded.
+{: .callout}
 
 > ## Connect to the server using an OMERO Docker image
 >
@@ -151,12 +141,7 @@ Ports 4063 and 4064 are forwarded, so you should be able to login as `root` from
 > > ## Solution
 > >
 > > ~~~
-> > docker run -it --rm --network my-omero-network my-omeropy-image
-> > OMERO Python Shell. Version 5.4.0-ice36-b74
-> > Type "help" for more information, "quit" or Ctrl-D to exit
-> > omero> login -s my-omero-server -u root
-> > Password:
-> > Created session 982fedea-f91b-4b9e-bc8e-564b935b5286 > > (root@my-omero-server:4064). Idle timeout: 10 min. Current group: system
+> > docker run -it --network my-omero-network my-omeropy-image omero login -s my-omero-server -u root
 > > ~~~
 > > {: .bash}
 > {: .solution}
@@ -196,14 +181,49 @@ Clearing expired sessions. This may take some time... [OK]
 OMERO.web is now running on port 4080, try connecting to it on [http://localhost:4080](http://localhost:4080).
 
 There is one big problem- the Django static files aren't served.
-A typical production installation of OMERO.web also requires an Nginx server.
+There are two options at present.
+
+A typical production installation of OMERO.web also requires an Nginx server. You can either an Nginx container with the OMERO.web statics bundled and configured to proxy to the OMERO.web container, for example [sorgerlab/omero-nginx](https://hub.docker.com/r/sorgerlab/omero-nginx/), or (easier) use a Django plugin called [WhiteNoise](http://whitenoise.evans.io/en/stable/) that serves static files directly through Django:
+~~~
+docker run -d --name my-omero-web-standalone --network my-omero-network -e OMEROHOST=my-omero-server -p 4081:4080 openmicroscopy/omero-web-standalone:master
+~~~
+{: .bash}
+You should be able to connect to OMERO.web on port 4081: [http://localhost:4081](http://localhost:4081).
 
 
+### Check what's running
+~~~
+docker ps
+~~~
+{: .bash}
+~~~
+CONTAINER ID        IMAGE                                        COMMAND                  CREATED              STATUS              PORTS                               NAMES
+15d4d60826e8        openmicroscopy/omero-web-standalone:master   "/usr/local/bin/en..."   40 seconds ago       Up 39 seconds       0.0.0.0:4081->4080/tcp              my-omero-web-standalone
+31931074e5b6        openmicroscopy/omero-web:5.4.0               "/usr/local/bin/en..."   51 seconds ago       Up 49 seconds       0.0.0.0:4080->4080/tcp              my-omero-web
+0bbfb6ccef0a        openmicroscopy/omero-server:5.4.0            "/usr/local/bin/en..."   About a minute ago   Up About a minute   0.0.0.0:4063-4064->4063-4064/tcp    my-omero-server
+b3603499d161        postgres:9.6                                 "docker-entrypoint..."   About a minute ago   Up About a minute   5432/tcp                            my-db-server
+~~~
+{: .output}
+~~~
+docker network ls
+~~~
+{: .bash}
+~~~
+NETWORK ID          NAME                DRIVER              SCOPE
+d8339aacac4c        bridge              bridge              local
+04228510796c        host                host                local
+4502df24113e        my-omero-network    bridge              local
+19a36ee67994        none                null                local
+~~~
+{: .output}
 
 
 ## Additional notes
 
-- There are [multiple types of network](https://docs.docker.com/engine/userguide/networking/#bridge-networks), for instance to allow container running on different hosts to communicate. In most cases the default type (`bridge`) if fine.
+- There are [multiple types of network](https://docs.docker.com/engine/userguide/networking/#bridge-networks), for instance to allow container running on different hosts to communicate. In most cases the default type (`bridge`) is fine.
 - Some of these Docker design choices are motivated by the [12 factor app](https://12factor.net/).
+- If you want to contribute to or discuss the existing images have a look at the open issues:
+  - [OMERO.web](https://github.com/openmicroscopy/omero-server-docker/issues)
+  - [OMERO.server](https://github.com/openmicroscopy/omero-web-docker/issues)
 
 {% include links.md %}
