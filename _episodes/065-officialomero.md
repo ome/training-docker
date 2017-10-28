@@ -192,6 +192,17 @@ docker run -d --name my-omero-web-standalone --network my-omero-network -e OMERO
 You should be able to connect to OMERO.web on port 4081: [http://localhost:4081](http://localhost:4081).
 
 
+> ## Problem: create an OMERO.web Nginx Docker image
+>
+> Create your own Docker image to run and configure Nginx. It should proxy the `openmicroscopy/omero-web:5.4.0` Docker image (which doesn't include WhiteNoise), including serving the Django static files.
+>
+> > ## Solution
+> >
+> > See [https://github.com/sorgerlab/omero-nginx-docker](https://github.com/sorgerlab/omero-nginx-docker) for clues.
+> {: .solution}
+{: .challenge}
+
+
 ### Check what's running
 ~~~
 docker ps
@@ -256,24 +267,17 @@ docker volume create my-omero-data
 ~~~
 {: .bash}
 
-When you run an image you can mount a docker volume into the container using the `--mount` argument. Mount `my-db-data` on `/var/lib/postgresql/data` when running PostgreSQL:
+Mount `my-db-data` on `/var/lib/postgresql/data` when running PostgreSQL:
 ~~~
-docker run -d --name my-db-server --mount source=my-db-data,target=/var/lib/postgresql/data --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:9.6
+docker run -d --name my-db-server --mount source=my-db-data,destination=/var/lib/postgresql/data --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:9.6
 ~~~
 {: .bash}
-If you are using an old version of Docker replace the `--mount ...` argument with `-v my-db-data:/var/lib/postgresql/data`.
-
 Mount `my-omero-data` on `/OMERO` when running OMERO.server:
 ~~~
-docker run -d --name my-omero-server --mount source=my-omero-data,target=/OMERO --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.4.0
+docker run -d --name my-omero-server --mount source=my-omero-data,destination=/OMERO --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.4.0
 ~~~
 {: .bash}
-If you are using an old version of Docker replace the `--mount ...` argument with `-v my-omero-data:/OMERO`.
 
-> ## `-v` and  `--mount`
->
-> `--mount` is a new argument introduced in version 17.06. Docker recommend using `--mount` instead of `-v`, though both methods are mostly equivalent.
-{: .callout}
 
 ## Additional notes
 

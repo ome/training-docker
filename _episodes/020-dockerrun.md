@@ -6,14 +6,25 @@ questions:
 - "How do you run an image?"
 - "How can you access it?"
 objectives:
-- "Run a Docker image interactively."
-- "Run a Docker image in the background."
+- "Run a Docker image."
+- "Fetch logs from running a container."
+- "Obtain a shell inside a container."
 keypoints:
+- "Docker Hub is a repository of prebuilt Docker images"
+- "`docker run` always creates a new container"
+- "`docker ps` lists containers"
+- "`docker logs` will fetch application logs in a well-designed container"
+- "When developing or testing `docker exec` and `docker cp` may be useful"
 ---
 
 This is an introduction to running and accessing pre-built Docker images.
 
 ## Where do images come from?
+
+Docker (the organisation) hosts a central registry of images: [https://hub.docker.com/explore/](https://hub.docker.com/explore/). You can easily use third party registries, or run your own.
+
+Docker Hub is like any other application or source code repository. There are some official images (e.g. `centos`, `ubuntu`), but anyone can push anything to it under a prefix (user or organisation name).
+
 
 ## Running Docker images interactively
 
@@ -148,7 +159,34 @@ See 'docker run --help'.
 ~~~
 {: .output}
 
-Stop the container:
+
+## Listing containers (`ps`)
+List running containers using the `ps` command:
+~~~
+docker ps
+~~~
+{: .bash}
+~~~
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                               NAMES
+d90cdd419eb6        nginx               "nginx -g 'daemon ..."   4 seconds ago       Up 3 seconds        80/tcp                              my-nginx
+~~~
+{: .output}
+
+List containers including those that aren't running:
+~~~
+docker ps -a
+~~~
+{: .bash}
+~~~
+CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS                      PORTS                               NAMES
+d90cdd419eb6        nginx                               "nginx -g 'daemon ..."   52 seconds ago      Up 51 seconds               80/tcp                              my-nginx
+33f641394ab6        centos:7                            "bash"                   2 minutes ago       Exited (0) 2 minutes ago                                        gallant_fermi
+~~~
+{: .output}
+
+
+## Stopping and removing containers (`stop`, `rm`)
+Stop the Nginx container:
 ~~~
 docker stop my-nginx
 ~~~
@@ -166,6 +204,16 @@ docker rm my-nginx
 my-nginx
 ~~~
 {: .output}
+~~~
+docker ps -a
+~~~
+{: .bash}
+~~~
+CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS                      PORTS                               NAMES
+33f641394ab6        centos:7                            "bash"                   2 minutes ago       Exited (0) 2 minutes ago                                        gallant_fermi
+~~~
+{: .output}
+
 
 ## Connecting to a port (`-p`/`--publish`)
 
@@ -205,7 +253,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 69f7daadf908        nginx               "nginx -g 'daemon ..."   4 seconds ago       Up 3 seconds        0.0.0.0:32768->80/tcp               my-nginx
 ~~~
 {: .output}
-This time open [http://localhost:32768](http://localhost:32768) (change 32768 to whichever port Docker has chosen for you).
+This time open [http://localhost:32768](http://localhost:32768) (change `32768` to whichever port Docker has chosen for you).
 
 ## Accessing the container directly
 
@@ -247,6 +295,9 @@ uid=0(root) gid=0(root) groups=0(root)
 ~~~
 {: .output}
 
+In general you should not need to use `docker exec` on a production container.
+
+
 ## Viewing container outputs and logs
 
 A well designed container will print out it's logs to stdout. These can be viewed with the `logs` command:
@@ -284,11 +335,9 @@ ls
 ~~~
 {: .bash}
 
-Create a local file, and copy this into the Nginx html directory
-
-
+Create a new local file called [nginx-new-index.html](../data/nginx-new-index.html), and copy this into the Nginx html directory:
 ~~~
-docker cp data/nginx-new-index.html my-nginx:/usr/share/nginx/html/index.html
+docker cp nginx-new-index.html my-nginx:/usr/share/nginx/html/index.html
 ~~~
 {: .bash}
 Refresh your browser, you should see your new index page.

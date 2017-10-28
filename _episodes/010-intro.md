@@ -16,10 +16,19 @@ keypoints:
 
 This is a basic introduction to the key concepts behind Docker and some of the terminology used.
 
+## What is containerisation?
+
+Two things:
+- A lightweight form of virtualisation
+- A methodology for packaging and distributing applications
+
+
 ## What is Docker?
 
 Docker is a platform for building and running applications in isolated containers.
 It is often used to support reproducible build and deployment of applications, but can also be used in an interactively for testing or exploring new software.
+
+It's also the name of the company behind the technology.
 
 
 ## How does Docker compare with virtual machines
