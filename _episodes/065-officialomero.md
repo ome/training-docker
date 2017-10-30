@@ -134,7 +134,7 @@ Ports `4063` and `4064` are forwarded, so you can login as the OMERO `root` user
 > Since this is a new PostgreSQL server an OMERO database didn't exist, so it was initialised automatically. If an old version of the database (e.g. OMERO 5.3) was present it would be automatically upgraded.
 {: .callout}
 
-> ## Connect to the server using an OMERO Docker image
+> ## Problem: Connect to the server using an OMERO Docker image
 >
 > In the previous session you created an Docker image `my-omeropy-image` containing OMERO.py which includes the CLI.
 > Run this image and login to the OMERO.server.
