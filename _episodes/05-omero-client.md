@@ -4,7 +4,6 @@ teaching: 10
 exercises: 25
 questions:
 - "How do I create a Docker image for a complex application?"
-- "How can you run it?"
 objectives:
 - "Create a Dockerfile for a complex application"
 keypoints:

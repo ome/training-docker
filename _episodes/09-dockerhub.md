@@ -1,7 +1,7 @@
 ---
 title: "Pulling and pushing to Docker Hub"
 teaching: 10
-exercises: 25
+exercises: 15
 questions:
 - "How do I publish my own images on Docker Hub?"
 objectives:
