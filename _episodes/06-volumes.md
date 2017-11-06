@@ -22,7 +22,7 @@ Persistent data should be stored in a [docker volume](https://docs.docker.com/en
 >
 > ~~~
 > docker run -it my-omeropy-image omero login -s nightshade.openmicroscopy.org
-> docker run -it my-omeropy-image user list
+> docker run -it my-omeropy-image omero user list
 > ~~~
 > {: .bash}
 > > The second command prompts you to login again. It is a completely separate Docker container, so the login state from the first command is not passed to the second container.
