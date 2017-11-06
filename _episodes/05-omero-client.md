@@ -84,7 +84,7 @@ When you run `my-omeropy-dockerfile` the `bash` shell is automatically started. 
 
 Change the default command by adding `CMD` to the end of your Dockerfile:
 ~~~
-CMD ["/opt/omero/OMERO.py/bin/omero"]
+CMD ["/home/omero/OMERO.py/bin/omero"]
 ~~~
 {: .source}
 
