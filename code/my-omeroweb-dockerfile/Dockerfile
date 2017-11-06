@@ -16,4 +16,12 @@ WORKDIR /home/omero
 USER omero
 RUN omego download python --ice 3.6 --sym OMERO.py
 
-CMD ["/opt/omero/OMERO.py/bin/omero", "web", "start", "--foreground"]
+USER root
+RUN pip install -r /home/omero/OMERO.py/share/web/requirements-py27.txt
+
+USER omero
+RUN /home/omero/OMERO.py/bin/omero config set omero.web.application_server development
+RUN /home/omero/OMERO.py/bin/omero config set omero.web.debug True
+RUN /home/omero/OMERO.py/bin/omero config set omero.web.application_server.host 0.0.0.0
+
+CMD ["/home/omero/OMERO.py/bin/omero", "web", "start", "--foreground"]
