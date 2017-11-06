@@ -22,7 +22,7 @@ Persistent data should be stored in a [docker volume](https://docs.docker.com/en
 >
 > ~~~
 > docker run -it my-omeropy-image omero login -s nightshade.openmicroscopy.org
-> docker run -it my-omeropy-image omero user list
+> docker run -it my-omeropy-image omero 
 > ~~~
 > {: .bash}
 > > The second command prompts you to login again. It is a completely separate Docker container, so the login state from the first command is not passed to the second container.
@@ -53,7 +53,7 @@ local               omero-session-vol
 
 When you run an image you can mount a docker volume into the container using the `--mount` argument. Mount `omero-session-vol` on `/home/omero/omero`:
 ~~~
-docker run -it --mount source=omero-session-vol,target=/home/omero/omero my-omeropy-image login -s nightshade.openmicroscopy.org
+docker run -it --mount source=omero-session-vol,target=/home/omero/omero my-omeropy-image omero login -s nightshade.openmicroscopy.org
 ~~~
 {: .bash}
 ~~~
