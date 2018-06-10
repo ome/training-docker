@@ -22,14 +22,14 @@ including detailed instructions on design, setup, and formatting.
 
 3.  Please read [the episodes of this lesson][rendered] to format your material.
 
-4.  Please keep the master copy of your lesson in your repository's `gh-pages` branch,
+4.  Please keep the master copy of your lesson in your repository's `master` branch,
     since that is what is
     [automatically published as a website by GitHub][github-pages].
 
 5.  To preview material,
     please run `make serve` from the command line
     to launch Jekyll with the correct parameters,
-    or push to your repository's `gh-pages` branch
+    or push to your repository's `master` branch
     and let GitHub take care of the rendering.
 
 6.  Run `make lesson-check` to check that your files follow our formatting rules.
