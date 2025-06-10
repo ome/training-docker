@@ -112,6 +112,7 @@ services:
       - POSTGRES_USER=omero
       - POSTGRES_DB=omero
       - POSTGRES_PASSWORD=SeCrEtPaSsWoRd
+      - POSTGRES_HOST_AUTH_METHOD=trust
     networks:
       - omero-network
     volumes:
