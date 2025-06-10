@@ -18,12 +18,10 @@ Docker compose deploys an application described by a YAML file. There are multip
 
 Start by creating a `docker-compose.yml` file for just PostgreSQL, including a private network and data volume:
 ~~~
-version: "3"
-
 services:
 
   database:
-    image: "postgres:9.6"
+    image: "postgres:16"
     environment:
       - POSTGRES_USER=omero
       - POSTGRES_DB=omero
@@ -44,7 +42,7 @@ Compare this with the command in the previous lesson used to run the postgres co
 
 Run docker-compose in the directory containing your `docker-compose.yml` file:
 ~~~
-docker-compose up
+docker compose up
 ~~~
 {: .bash}
 ~~~
@@ -60,12 +58,10 @@ database_1  | LOG:  database system is ready to accept connections
 
 Next add `omeroserver` to the `services` and `omero-volume` to `volumes`:
 ~~~
-version: "3"
-
 services:
 
   database:
-    image: "postgres:9.6"
+    image: "postgres:16"
     environment:
       - POSTGRES_USER=omero
       - POSTGRES_DB=omero
@@ -76,7 +72,7 @@ services:
       - "database-volume:/var/lib/postgresql/data"
 
   omeroserver:
-    image: "openmicroscopy/omero-server:5.4.0"
+    image: "openmicroscopy/omero-server:5.6.15"
     environment:
       - CONFIG_omero_db_host=database
       - CONFIG_omero_db_user=omero
@@ -101,19 +97,17 @@ volumes:
 {: .source}
 Run
 ~~~
-docker-compose up
+docker compose up
 ~~~
 {: .bash}
 and you should see both the database and OMERO.server running.
 
 Finally add `omero-web` to `services`:
 ~~~
-version: "3"
-
 services:
 
   database:
-    image: "postgres:9.6"
+    image: "postgres:16"
     environment:
       - POSTGRES_USER=omero
       - POSTGRES_DB=omero
@@ -124,7 +118,7 @@ services:
       - "database-volume:/var/lib/postgresql/data"
 
   omeroserver:
-    image: "openmicroscopy/omero-server:5.4.0"
+    image: "openmicroscopy/omero-server:5.6.15"
     environment:
       - CONFIG_omero_db_host=database
       - CONFIG_omero_db_user=omero
@@ -140,7 +134,7 @@ services:
       - "omero-volume:/OMERO"
 
   omeroweb:
-    image: "openmicroscopy/omero-web-standalone:master"
+    image: "openmicroscopy/omero-web-standalone:latest"
     environment:
       - OMEROHOST=omeroserver
     networks:
@@ -158,29 +152,10 @@ volumes:
 {: .source}
 Run
 ~~~
-docker-compose up
+docker compose up
 ~~~
 {: .bash}
 and you should be able to log in to OMERO.web at [http://localhost:4080](http://localhost:4080).
 
-If you are feeling lazy you can [download the complete docker-compose.yml file](../code/docker-compose/docker-compose.yml)
-
-> ## Modifying the OMERO configuration
->
-> Modify `docker-compose.yml` to include some non-default configuration, for example enable a public user in OMERO.web
->
-> > ## Solution
-> >
-> > Add the following to the `omeroweb` `environment`:
-> > ~~~
-> > - CONFIG_omero_web_public_enabled=True
-> > - CONFIG_omero_web_public_user=root
-> > - CONFIG_omero_web_public_password=omero-root-password
-> > - CONFIG_omero_web_public_url__filter=^/
-> > ~~~
-> > {: .bash}
-> > This is intended to be a quick example, you should obviously avoid using `root` as your public user in production.
-> {: .solution}
-{: .challenge}
 
 {% include links.md %}

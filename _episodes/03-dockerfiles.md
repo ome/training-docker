@@ -30,7 +30,7 @@ cd my-first-dockerfile
 {: .bash}
 ~~~
 FROM rockylinux:9
-LABEL maintainer="ome-devel@lists.openmicroscopy.org.uk"
+LABEL maintainer="OME"
 
 RUN dnf install -y -q epel-release
 RUN dnf install -y -q python-pip

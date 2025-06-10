@@ -14,14 +14,14 @@ keypoints:
 
 Docker image on Docker Hub follow the pattern `<hub-user>/<repo-name>[:<tag>]`, e.g.:
 ~~~
-docker pull openmicroscopy/omero-server:5.4.0
+docker pull openmicroscopy/omero-server:5.6.15
 ~~~
 {: .bash}
 
 A small number of images are official Docker images and have a hub-user `library` which can be omitted, e.g. these are equivalent:
 ~~~
-docker pull centos:7
-docker pull library/centos:7
+docker pull rockylinux:9
+docker pull library/rockylinux:9
 ~~~
 {: .bash}
 
@@ -74,7 +74,7 @@ If you push was successful you should [see the image listed under `tags` on http
 > ## The `latest` tag
 >
 > `latest` is a special default tag.
-> It is not updated automatically when you push to a tag- you must push to it separately.
+> It is not updated automatically when you push to a tag, you must push to it separately.
 {: .callout}
 
 You should now be able to pull someone else's image:
@@ -87,9 +87,7 @@ docker pull some-other-user/my-omeropy-image:0.1
 ## Automated builds
 
 Docker Hub can optionally be linked directly to GitHub (or BitBucket) so that pushing to a GitHub repository will automatically update the Docker Hub image (Docker Hub runs `docker build` on its own infrastructure).
-This works in a similar way to how Travis CI automatically runs tests when you push to GitHub.
-
-To do this go to the `Create` menu, select `Create Automated Build`, and follow the prompts.
+This works in a similar way to how GitHub actions automatically runs tests when you push to GitHub.
 
 
 > ## Alternative Docker registries

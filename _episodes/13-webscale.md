@@ -17,7 +17,7 @@ A few examples:
 - ports: Manually defining port-forwarding is problematic when multiple users are running applications, especially when running independent copies of the same application. Automatic port forwarding requires some sort of discovery method so external clients can connect.
 - Managing a large number of containers or deployments over multiple hosts is complicated.
 
-Many of these issues will become apparent when you start doing advanced work with [devspace](https://github.com/openmicroscopy/devspace/).
+Many of these issues will become apparent when you start doing advanced work e.g.  the [OME Continuous integration system](https://github.com/openmicroscopy/devspace/).
 
 
 ## Advanced orchestration in production:

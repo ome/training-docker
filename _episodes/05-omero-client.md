@@ -18,7 +18,7 @@ We install a pre-compiled version matching our Docker image i.e. ``rockylinux`` 
 
 ~~~
 FROM rockylinux:9
-LABEL maintainer="ome-devel@lists.openmicroscopy.org.uk"
+LABEL maintainer="OME"
 
 RUN dnf install -y epel-release
 RUN dnf install -y python-pip

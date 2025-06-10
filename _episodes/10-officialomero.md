@@ -27,19 +27,19 @@ Using Ansible means only one set of instructions has to be maintained.
 
 Pull all the required images:
 ~~~
-docker pull openmicroscopy/omero-server:5.4.0
-docker pull openmicroscopy/omero-web:5.4.0
-docker pull postgres:9.6
+docker pull openmicroscopy/omero-server:5.6.15
+docker pull openmicroscopy/omero-web:5.29.0-1
+docker pull postgres:16
 ~~~
 {: .bash}
 
 ### Database and Networking
 
-A naive way to join containers together is to use port forwarding, and configure each container to connect to the required port. However, this is insecure.
+A way to join containers together is to use port forwarding, and configure each container to connect to the required port. However, this is insecure.
 
 Instead you can create a separate Docker network for you application. This ensures:
 - only containers within the same network can talk to each other (unless you forward a port)
-- Docker runs an internal DNS server that lets you reference other images by name
+- Docker runs an internal DNS server that let's you reference other images by name
 
 If you do not specify a network Docker provides a default network, but this does not support communication between containers.
 
@@ -55,7 +55,7 @@ docker network create my-omero-network
 
 Start your PostgreSQL server, specifying the network you created as a parameter:
 ~~~
-docker run -d --name my-db-server --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:9.6
+docker run -d --name my-db-server --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:15
 ~~~
 {: .bash}
 
@@ -65,7 +65,7 @@ The above example creates a user and database named `omero`, and sets a password
 You can check the DNS resolution by attempting to ping my-db-server from another container.
 First try from a container on the default docker network:
 ~~~
-docker run -it --rm centos ping my-db-server
+docker run -it --rm rocky ping my-db-server
 ~~~
 {: .bash}
 ~~~
@@ -74,7 +74,7 @@ ping: my-test-db-server: Name or service not known
 {: .output}
 Then try it on the network you created:
 ~~~
-docker run -it --rm --network my-omero-network centos ping my-db-server
+docker run -it --rm --network my-omero-network rocky ping my-db-server
 ~~~
 {: .bash}
 ~~~
@@ -97,7 +97,7 @@ rtt min/avg/max/mdev = 0.082/0.102/0.122/0.020 ms
 
 Run OMERO.server. OMERO requires several configuration parameters to be set; these can be passed by defining environment variables with `-e`:
 ~~~
-docker run -d --name my-omero-server --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.4.0
+docker run -d --name my-omero-server --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.6.15
 ~~~
 {: .bash}
 Other ways of setting configuration variables for OMERO include passing in a configuration file, but this has the disadvantage of being harder to deploy when using remote Docker servers.
@@ -131,7 +131,7 @@ Ports `4063` and `4064` are forwarded, so you can login as the OMERO `root` user
 
 > ## Database initialisation and upgrades
 >
-> Since this is a new PostgreSQL server an OMERO database didn't exist, so it was initialised automatically. If an old version of the database (e.g. OMERO 5.3) was present it would be automatically upgraded.
+> Since this is a new PostgreSQL server an OMERO database didn't exist, so it was initialised automatically. If an old version of the database (e.g. OMERO 5.4) was present it would be automatically upgraded.
 {: .callout}
 
 > ## Problem: Connect to the server using an OMERO Docker image
@@ -152,7 +152,7 @@ Ports `4063` and `4064` are forwarded, so you can login as the OMERO `root` user
 
 As with OMERO.server the production OMERO.web image requires a few parameters to configure the connection to OMERO.server:
 ~~~
-docker run -d --name my-omero-web --network my-omero-network -e OMEROHOST=my-omero-server -p 4080:4080 openmicroscopy/omero-web:5.4.0
+docker run -d --name my-omero-web --network my-omero-network -e OMEROHOST=my-omero-server -p 4080:4080 openmicroscopy/omero-web:5.29.0-1
 ~~~
 {: .bash}
 Since the most common configuration is to connect to a single OMERO.server this Docker image has a special environment variable, `OMEROHOST`, that will automatically configure OMERO.web to connect to that server.
@@ -169,14 +169,7 @@ Starting OMERO.web
 ...
 604 static files copied to '/opt/omero/web/OMERO.web/lib/python/omeroweb/static', 2 post-processed.
 Clearing expired sessions. This may take some time... [OK]
-[2017-10-25 14:26:10 +0000] [57] [INFO] Starting gunicorn 19.7.1
-[2017-10-25 14:26:10 +0000] [57] [INFO] Listening at: http://0.0.0.0:4080 (57)
-[2017-10-25 14:26:10 +0000] [57] [INFO] Using worker: sync
-[2017-10-25 14:26:10 +0000] [62] [INFO] Booting worker with pid: 62
-[2017-10-25 14:26:10 +0000] [63] [INFO] Booting worker with pid: 63
-[2017-10-25 14:26:10 +0000] [68] [INFO] Booting worker with pid: 68
-[2017-10-25 14:26:10 +0000] [73] [INFO] Booting worker with pid: 73
-[2017-10-25 14:26:10 +0000] [74] [INFO] Booting worker with pid: 74
+
 ~~~
 {: .output}
 OMERO.web is now running on port 4080, try connecting to it on [http://localhost:4080](http://localhost:4080).
@@ -184,23 +177,13 @@ OMERO.web is now running on port 4080, try connecting to it on [http://localhost
 There is one big problem- the Django static files aren't served.
 There are two options at present.
 
-A typical production installation of OMERO.web also requires an Nginx server. You can either an Nginx container with the OMERO.web statics bundled and configured to proxy to the OMERO.web container, for example [sorgerlab/omero-nginx](https://hub.docker.com/r/sorgerlab/omero-nginx/), or (easier) use a Django plugin called [WhiteNoise](http://whitenoise.evans.io/en/stable/) that serves static files directly through Django:
+A typical production installation of OMERO.web also requires an Nginx server. You can either an Nginx container with the OMERO.web statics bundled and configured to proxy to the OMERO.web container, the easiest option is to use a Django plugin called [WhiteNoise](http://whitenoise.evans.io/en/stable/) that serves static files directly through Django:
 ~~~
-docker run -d --name my-omero-web-standalone --network my-omero-network -e OMEROHOST=my-omero-server -p 4081:4080 openmicroscopy/omero-web-standalone:master
+docker run -d --name my-omero-web-standalone --network my-omero-network -e OMEROHOST=my-omero-server -p 4081:4080 openmicroscopy/omero-web-standalone:latest
 ~~~
 {: .bash}
 You should be able to connect to OMERO.web on port 4081: [http://localhost:4081](http://localhost:4081).
 
-
-> ## Problem: create an OMERO.web Nginx Docker image
->
-> Create your own Docker image to run and configure Nginx. It should proxy the `openmicroscopy/omero-web:5.4.0` Docker image (which doesn't include WhiteNoise), including serving the Django static files.
->
-> > ## Solution
-> >
-> > See [https://github.com/sorgerlab/omero-nginx-docker](https://github.com/sorgerlab/omero-nginx-docker) for clues.
-> {: .solution}
-{: .challenge}
 
 
 ### Check what's running
@@ -210,10 +193,10 @@ docker ps
 {: .bash}
 ~~~
 CONTAINER ID        IMAGE                                        COMMAND                  CREATED              STATUS              PORTS                               NAMES
-15d4d60826e8        openmicroscopy/omero-web-standalone:master   "/usr/local/bin/en..."   40 seconds ago       Up 39 seconds       0.0.0.0:4081->4080/tcp              my-omero-web-standalone
-31931074e5b6        openmicroscopy/omero-web:5.4.0               "/usr/local/bin/en..."   51 seconds ago       Up 49 seconds       0.0.0.0:4080->4080/tcp              my-omero-web
-0bbfb6ccef0a        openmicroscopy/omero-server:5.4.0            "/usr/local/bin/en..."   About a minute ago   Up About a minute   0.0.0.0:4063-4064->4063-4064/tcp    my-omero-server
-b3603499d161        postgres:9.6                                 "docker-entrypoint..."   About a minute ago   Up About a minute   5432/tcp                            my-db-server
+15d4d60826e8        openmicroscopy/omero-web-standalone:latest   "/usr/local/bin/en..."   40 seconds ago       Up 39 seconds       0.0.0.0:4081->4080/tcp              my-omero-web-standalone
+31931074e5b6        openmicroscopy/omero-web:5.29.0-1               "/usr/local/bin/en..."   51 seconds ago       Up 49 seconds       0.0.0.0:4080->4080/tcp              my-omero-web
+0bbfb6ccef0a        openmicroscopy/omero-server:5.6.15            "/usr/local/bin/en..."   About a minute ago   Up About a minute   0.0.0.0:4063-4064->4063-4064/tcp    my-omero-server
+b3603499d161        postgres:16                                "docker-entrypoint..."   About a minute ago   Up About a minute   5432/tcp                            my-db-server
 ~~~
 {: .output}
 ~~~
@@ -269,12 +252,12 @@ docker volume create my-omero-data
 
 Mount `my-db-data` on `/var/lib/postgresql/data` when running PostgreSQL:
 ~~~
-docker run -d --name my-db-server --mount source=my-db-data,destination=/var/lib/postgresql/data --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:9.6
+docker run -d --name my-db-server --mount source=my-db-data,destination=/var/lib/postgresql/data --network my-omero-network -e POSTGRES_USER=omero -e POSTGRES_DB=omero -e POSTGRES_PASSWORD=SeCrEtPaSsWoRd postgres:16
 ~~~
 {: .bash}
 Mount `my-omero-data` on `/OMERO` when running OMERO.server:
 ~~~
-docker run -d --name my-omero-server --mount source=my-omero-data,destination=/OMERO --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.4.0
+docker run -d --name my-omero-server --mount source=my-omero-data,destination=/OMERO --network my-omero-network -e CONFIG_omero_db_host=my-db-server -e CONFIG_omero_db_user=omero -e CONFIG_omero_db_pass=SeCrEtPaSsWoRd -e CONFIG_omero_db_name=omero -e ROOTPASS=omero-root-password -p 4063:4063 -p 4064:4064 openmicroscopy/omero-server:5.6.15
 ~~~
 {: .bash}
 
