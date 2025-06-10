@@ -8,10 +8,12 @@ This workshop will demonstrate how to use Docker, starting from the basic comman
 > ## Prerequisites
 >
 > 1. You must have access to a running Docker server.
->    - [The open-source Community Edition can be downloaded here](https://store.docker.com/search?offering=community&q=&type=edition) and installed on your own computer, including on [OS X](https://store.docker.com/editions/community/docker-ce-desktop-mac) and  [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows).
->    - Docker is also available in the repositories of many Linux distributions.
-> 2. This workshop has been tested with version XXX, but should work with most recent versions of Docker.
-> 3. You must create a [Docker Hub account](https://hub.docker.com/) in advance of the workshop, and make a note of your username and password.
+>    Read the installation page corresponding to your operation system:
+>    - [Linux installation](https://docs.docker.com/engine/install/),
+>    - [Mac installation](https://docs.docker.com/desktop/setup/install/mac-install/),
+>    - [Windows instatllation](https://docs.docker.com/desktop/setup/install/windows-install/)
+> 2. This workshop has been tested with version 28.2.2, but should work with most recent versions of Docker.
+> 3. You must create a [Docker Hub account](https://hub.docker.com/) in advance of the workshop, and make a note of your username and password if you wish to publish a Docker image.
 {: .prereq}
 
 > ## Ten Things You Need To Know
