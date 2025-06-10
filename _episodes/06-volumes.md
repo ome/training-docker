@@ -21,8 +21,8 @@ Persistent data should be stored in a [docker volume](https://docs.docker.com/en
 > ## What happens if you run this?
 >
 > ~~~
-> docker run -it my-omeropy-image omero login -s nightshade.openmicroscopy.org
-> docker run -it my-omeropy-image omero user list
+> docker run -it my-omeropy-image /opt/omero/web/venv3/bin/omero login -s workshop.openmicroscopy.org
+> docker run -it my-omeropy-image /opt/omero/web/venv3/bin/omero user list
 > ~~~
 > {: .bash}
 > > The second command prompts you to login again. It is a completely separate Docker container, so the login state from the first command is not passed to the second container.
@@ -51,24 +51,13 @@ local               omero-session-vol
 ~~~
 {: .output}
 
-When you run an image you can mount a docker volume into the container using the `--mount` argument. Mount `omero-session-vol` on `/home/omero/omero`:
+When you run an image you can mount a docker volume into the container using the `--mount` argument. Mount `omero-session-vol` on `/home/omero/omero-folder`:
 ~~~
-docker run -it --mount source=omero-session-vol,target=/home/omero/omero my-omeropy-image omero login -s nightshade.openmicroscopy.org
+docker run -it --mount source=omero-session-vol,target=/home/omero/omero-folder my-omeropy-image /opt/omero/web/venv3/bin/omero login -s workshop.openmicroscopy.org
 ~~~
 {: .bash}
 ~~~
-WARNING:omero.util.TempFileManager:Invalid tmp dir: /home/omero/omero/tmp
-Traceback (most recent call last):
-  File "/home/omero/OMERO.py/lib/python/omero/util/temp_files.py", line 172, in tmpdir
-    self.create(target)
-  File "/home/omero/OMERO.py/lib/python/omero/util/temp_files.py", line 240, in create
-    dir.makedirs(0700)
-  File "/home/omero/OMERO.py/lib/python/path.py", line 1244, in makedirs
-    os.makedirs(self, mode)
-  File "/usr/lib64/python2.7/os.py", line 157, in makedirs
-    mkdir(name, mode)
-OSError: [Errno 13] Permission denied: '/home/omero/omero/tmp'
-Could not access session dir: /home/omero/omero/sessions
+Could not access session dir: /home/omero/omero-folder/sessions
 ~~~
 {: .output}
 
@@ -77,23 +66,19 @@ The volume defaults to being owned by root. You can fix this by creating the mou
 RUN useradd omero
 WORKDIR /home/omero
 USER omero
-RUN omego download python --ice 3.6 --sym OMERO.py
-
-RUN mkdir /home/omero/omero
+RUN mkdir /home/omero/omero-folder
 ~~~
 {: .source}
 Rebuild, and run. The session information should now be kept between container runs:
 ~~~
-docker run -it --mount source=omero-session-vol,destination=/home/omero/omero my-omeropy-image omero login -s nightshade.openmicroscopy.org
-docker run -it --mount source=omero-session-vol,destination=/home/omero/omero my-omeropy-image omero user list
+docker run -it --mount source=omero-session-vol,destination=/home/omero/omero-folder my-omeropy-image /opt/omero/web/venv3/bin/omero login -s workshop.openmicroscopy.org
+docker run -it --mount source=omero-session-vol,destination=/home/omero/omero-folder my-omeropy-image /opt/omero/web/venv3/bin/omero user list
 ~~~
 {: .bash}
 
 > ## `-v` and  `--mount`
 >
 > `--mount` is a new argument introduced in version 17.06. Docker recommend using `--mount` instead of `-v`, though both methods are mostly equivalent.
->
-> If you are using an old version of Docker replace the `--mount ...` argument with `-v omero-session-vol:/home/omero/omero` in the above example.
 {: .callout}
 
 
@@ -101,7 +86,7 @@ docker run -it --mount source=omero-session-vol,destination=/home/omero/omero my
 
 Volumes can be mounted with several other options, e.g. `readonly`:
 ~~~
---mount source=omero-session-vol,destination=/home/omero/omero,readonly
+--mount source=omero-session-vol,destination=/home/omero/omero-folder,readonly
 ~~~
 {: .bash}
 See the [documentation on volumes](https://docs.docker.com/engine/admin/volumes/volumes/) for more information.
@@ -113,7 +98,7 @@ For example, you could use this to mount a directory of test files into a contai
 
 Example or mounting your local home directory into a container:
 ~~~
-docker run -it --mount type=bind,source="$HOME",destination=/external-home,readonly centos:7 ls -l /external-home/
+docker run -it --mount type=bind,source="$HOME",destination=/external-home,readonly rockylinux:9 ls -l /external-home/
 ~~~
 {: .bash}
 

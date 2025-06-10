@@ -12,29 +12,30 @@ keypoints:
 This builds on the previous lesson to create a fully working Docker image for the OMERO python client.
 
 ## Installing OMERO.py's dependencies
-In the previous image we installed `omego`.
-To install OMERO.py we need additional dependencies, most notably Ice.
-The "proper" way to do this is to `pip install zeroc-ice`, but since this takes a long time and requires installing a full compiler toolchain we can cheat and install a pre-compiled version.
+To install OMERO.py we need additional dependencies, most notably the Ice Python bindings.
+We install a pre-compiled version matching our Docker image i.e. ``rockylinux`` and the Python version installed i.e. ``3.9``.
+
 ~~~
-FROM centos:7
-MAINTAINER spli@dundee.ac.uk
+FROM rockylinux:9
+LABEL maintainer="ome-devel@lists.openmicroscopy.org.uk"
 
-RUN yum install -y epel-release
-RUN yum install -y python-pip
-RUN pip install omego
+RUN dnf install -y epel-release
+RUN dnf install -y python-pip
 
-# This is the proper way to install Ice Python:
-#RUN pip install zeroc-ice
-# But this is a shortcut that installs a precompiled version
-RUN pip install https://github.com/openmicroscopy/zeroc-ice-py-centos7/releases/download/0.0.3/zeroc_ice-3.6.4-cp27-cp27mu-linux_x86_64.whl
+RUN dnf install -y python3
+
+RUN python3 -mvenv /opt/omero/web/venv3
+
+# But this is a shortcut that installs a precompiled version to install Ice Python
+RUN /opt/omero/web/venv3/bin/pip install https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl
+RUN /opt/omero/web/venv3/bin/pip install omero-py
 
 RUN useradd omero
 WORKDIR /home/omero
 USER omero
-RUN omego download python --ice 3.6 --sym OMERO.py
 ~~~
 {: .source}
-If you are feeling lazy you can [download the Dockerfile](../code/my-omeropy-dockerfile/Dockerfile).
+
 
 ~~~
 docker build -t my-omeropy-image .
@@ -42,49 +43,29 @@ docker run -it my-omeropy-image
 ~~~
 {: .bash}
 ~~~
-/home/omero/OMERO.py/bin/omero version
+/opt/omero/web/venv3/bin/omero version
 ~~~
 {: .bash}
 ~~~
-ERROR:omero.gateway:No Pillow installed, line plots and split channel will fail!
-5.4.0-ice36-b74
+OMERO.py version:
+5.20.0
+
 ~~~
 {: .output}
 
-> ## Fix the error/warning
->
-> `ERROR:omero.gateway:No Pillow installed` indicates there is a missing dependency. Can you modify the Dockerfile to remove this error?
->
-> > ## Solution
-> >
-> > Add this line:
-> > ~~~
-> > RUN pip install pillow
-> > ~~~
-> > after the existing `RUN pip install` lines.
-> > {: .source}
-> {: .solution}
-{: .challenge}
-
-It's a bit annoying that you have to type the full path to `/home/omero/OMERO.py/bin/omero`, so add it to the `PATH` in the image using the Dockerfile `ENV` command:
+Connect to `workshop.openmicroscopy.org` using[CLI commands](https://omero.readthedocs.io/en/stable/sysadmins/cli/index.html), e.g.:
 ~~~
-ENV PATH="/home/omero/OMERO.py/bin:${PATH}"
-~~~
-{: .source}
-Rebuild the image. You should now have a fully working OMERO.py client. Try connecting to `nightshade.openmicroscopy.org` and running some [CLI commands](https://docs.openmicroscopy.org/omero/5.4.0/sysadmins/cli/index.html), e.g.:
-~~~
-omero login -s nightshade.openmicroscopy.org
-omero user list
+/opt/omero/web/venv3/bin/omero login -s workshop.openmicroscopy.org
 ~~~
 {: .bash}
 
 
 ## Default commands
-When you run `my-omeropy-dockerfile` the `bash` shell is automatically started. This is the default in the parent `centos:7` image.
+When you run `my-omeropy-dockerfile` the `bash` shell is automatically started. This is the default in the parent `rockylinux:9` image.
 
 Change the default command by adding `CMD` to the end of your Dockerfile:
 ~~~
-CMD ["/home/omero/OMERO.py/bin/omero"]
+CMD ["/opt/omero/web/venv3/bin/omero"]
 ~~~
 {: .source}
 
@@ -95,7 +76,7 @@ docker run -it my-omeropy-image
 ~~~
 {: .bash}
 ~~~
-OMERO Python Shell. Version 5.4.0-ice36-b74
+OMERO Python Shell. Version 5.20
 Type "help" for more information, "quit" or Ctrl-D to exit
 omero>
 ~~~
@@ -114,25 +95,19 @@ docker: Error response from daemon: oci runtime error: container_linux.go:265: s
 {: .output}
 If you pass a command line to `docker run` it overwrites the default, so you need to pass the whole command line including `omero`:
 ~~~
-docker run -it my-omeropy-image omero version
+docker run -it my-omeropy-image /opt/omero/web/venv3/bin/omero version
 ~~~
 {: .bash}
 ~~~
-5.4.0-ice36-b74
+OMERO.py version:
+5.20.0
 ~~~
 {: .output}
 
 > ## ENTRYPOINT vs CMD
 >
-> You can make the Docker image behave as the `omero` command using an `ENTRYPOINT`, see the Docker documentation for details.
+> You can make the Docker image behave as the `omero` command using an `ENTRYPOINT`, see the [Docker documentation](https://www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/) for details.
 {: .callout}
-
-> ## Advanced: Compile and install Ice
->
-> The current image uses a pre-compiled version of Ice.
-> Modify the image to install ice using the recommended Zeroc method (`pip install zeroc-ice`).
-> You will need to install a compiler and all development libraries required to compile Ice.
-{: .challenge}
 
 
 ## Best practice for writing Dockerfiles

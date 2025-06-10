@@ -13,6 +13,12 @@ This builds on previous lessons to create an OMERO.web image running in developm
 
 Start with the image built in the previous lesson
 ~~~
+RUN pip install omero-py
+~~~
+{: .bash}
+~~~
+
+~~~
 docker run -it my-omeropy-image omero web start
 ~~~
 {: .bash}

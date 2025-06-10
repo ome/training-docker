@@ -14,7 +14,7 @@ keypoints:
 - "Containers ..."
 ---
 
-This is a basic introduction to the key concepts behind Docker and some of the terminology used.
+This is a basic introduction to the key concepts behind [Docker](https://www.docker.com/) and some of the terminology used.
 
 ## What is containerisation?
 
@@ -28,19 +28,19 @@ Two things:
 Docker is a platform for building and running applications in isolated containers.
 It is often used to support reproducible build and deployment of applications, but can also be used in an interactively for testing or exploring new software.
 
-It's also the name of the company behind the technology.
+It is also the name of the company behind the technology.
 
 
 ## How does Docker compare with virtual machines
 
-Most virtualisation platform (e.g. VirtualBox, VMWare, OpenStack) replicate all the hardware of a typical computer in software, allowing you to run most operating systems.
+Most virtualisation platform (e.g. [VirtualBox](https://www.virtualbox.org/), [VMWare](https://www.vmware.com/), [OpenStack](https://www.openstack.org/)) replicate all the hardware of a typical computer in software, allowing you to run most operating systems.
 - Resource heavy
 
 In contrast Docker is a form of lightweight virtualisation
-- Takes advantage of Linux kernel features to isolate separate processes
+- It takes advantage of Linux kernel features to isolate separate processes
 - Low-level system calls or hardware access probably won't work
 
-A bit like individual OMERO.servers for each user vs one server with each user in their own private group.
+A bit like individual OMERO.servers for each user versusx one server with each user in their own private group.
 
 
 ## Images and containers
