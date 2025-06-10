@@ -30,7 +30,6 @@ Many of these issues will become apparent when you start doing advanced work e.g
 
 ## The dark side...
 
-- [Why would anyone choose Docker over fat binaries?](http://www.smashcompany.com/technology/why-would-anyone-choose-docker-over-fat-binaries)
 - [Docker in Production: A History of Failure](https://thehftguy.com/2016/11/01/docker-in-production-an-history-of-failure/)
 - [Docker in Production: An Update](https://thehftguy.com/2017/02/23/docker-in-production-an-update/)
 
