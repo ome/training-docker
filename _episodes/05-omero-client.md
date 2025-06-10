@@ -12,6 +12,7 @@ keypoints:
 This builds on the previous lesson to create a fully working Docker image for the OMERO python client.
 
 ## Installing OMERO.py's dependencies
+We install OMERO.py in a virtual environment.
 To install OMERO.py we need additional dependencies, most notably the Ice Python bindings.
 We install a pre-compiled version matching our Docker image i.e. ``rockylinux`` and the Python version installed i.e. ``3.9``.
 

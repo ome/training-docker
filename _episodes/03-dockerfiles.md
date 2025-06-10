@@ -34,6 +34,7 @@ LABEL maintainer="ome-devel@lists.openmicroscopy.org.uk"
 
 RUN dnf install -y -q epel-release
 RUN dnf install -y -q python-pip
+RUN dnf install -y python3
 ~~~
 {: .source}
 - `FROM`: The name of a base image
