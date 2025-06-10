@@ -33,7 +33,7 @@ It is also the name of the company behind the technology.
 
 ## How does Docker compare with virtual machines
 
-Most virtualisation platform (e.g. [VirtualBox](https://www.virtualbox.org/), [VMWare](https://www.vmware.com/), [OpenStack](https://www.openstack.org/)) replicate all the hardware of a typical computer in software, allowing you to run most operating systems.
+Most virtualisation platforms (e.g. [VirtualBox](https://www.virtualbox.org/), [VMWare](https://www.vmware.com/), [OpenStack](https://www.openstack.org/)) replicate all the hardware of a typical computer in software, allowing you to run most operating systems.
 - Resource heavy
 
 In contrast Docker is a form of lightweight virtualisation
