@@ -16,13 +16,4 @@ This workshop will demonstrate how to use Docker, starting from the basic comman
 > 3. You must create a [Docker Hub account](https://hub.docker.com/) in advance of the workshop, and make a note of your username and password if you wish to publish a Docker image.
 {: .prereq}
 
-> ## Ten Things You Need To Know
->
-> 0.  Don't panic.
-{: .checklist}
-
-> ## Timings are extremely approximate.
-> They will be finalised nearer the time
-{: .callout}
-
 {% include links.md %}
