@@ -40,8 +40,6 @@ In contrast Docker is a form of lightweight virtualisation
 - It takes advantage of Linux kernel features to isolate separate processes
 - Low-level system calls or hardware access probably won't work
 
-A bit like individual OMERO.servers for each user versusx one server with each user in their own private group.
-
 
 ## Images and containers
 
