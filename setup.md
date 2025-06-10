@@ -8,9 +8,12 @@ You must have access to a running Docker server and a Docker Hub account for thi
 
 ## Docker
 
-The open-source Community Edition of Docker [can be downloaded here](https://store.docker.com/search?offering=community&q=&type=edition) and installed on your own computer, including on [OS X](https://store.docker.com/editions/community/docker-ce-desktop-mac) and  [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows). You should download and install the latest stable version (this workshop has been tested on **28.2.2**). 
-
-If you are a running a recent version of Linux then Docker may be available in the distribution repositories, though it is likely to be an older version. Consider installing a [newer version](https://store.docker.com/search?offering=community&q=&type=edition). On Linux Docker commands can only be run as root. You can change this by adding yourself to the `docker` group.
+Install Docker Engine. Read the installation page corresponding to your operation system:
+[Linux installation](https://docs.docker.com/engine/install/),
+[Mac installation](https://docs.docker.com/desktop/setup/install/mac-install/),
+[Windows instatllation](https://docs.docker.com/desktop/setup/install/windows-install/)
+You should download and install the latest stable version.
+This workshop has been tested on **28.2.2**. 
 
 
 ## Docker Hub
