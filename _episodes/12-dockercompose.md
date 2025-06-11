@@ -214,7 +214,7 @@ services:
     image: "openmicroscopy/omero-web-standalone:5"
     environment:
       - OMEROHOST=omeroserver
-      - CONFIG_omero.web.csrf_trusted_origins=[localhost:8080]
+      - CONFIG_omero_web_csrf__trusted__origins=["http://localhost:8080"]
     networks:
       - omero-network
 
