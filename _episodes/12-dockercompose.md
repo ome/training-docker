@@ -97,10 +97,20 @@ volumes:
 {: .source}
 Run
 ~~~
-docker compose -f docker-compose.yml up
+docker compose -f docker-compose.yml up -d
 ~~~
 {: .bash}
 and you should see both the database and OMERO.server running.
+``-d`` indicates that we are running in "detach" mode.
+
+
+To stop the container
+
+Run
+~~~
+docker compose -f docker-compose.yml down
+~~~
+{: .bash}
 
 We now want to add `omero-web` and `nginx` to `services`.
 First we need to create a folder ``nginx`` in the directory where the ``docker-compose.yml`` file is.
