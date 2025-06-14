@@ -190,16 +190,16 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     networks:
       - omero-network
+    ports:
+      - "5432:5432"
     volumes:
-      - "database-volume:/var/lib/postgresql/data"
+      - "./pgdata:/var/lib/postgresql/data"
 
   omeroserver:
     # This container uses the tag for the latest omero server release of OMERO 5
     image: "openmicroscopy/omero-server:5"
     environment:
       - CONFIG_omero_db_host=database
-      - CONFIG_omero_db_user=omero
-      - CONFIG_omero_db_pass=SeCrEtPaSsWoRd
       - CONFIG_omero_db_name=omero
       - ROOTPASS=omero-root-password
     networks:
@@ -236,7 +236,6 @@ networks:
   omero-network:
 
 volumes:
-  database-volume:
   omero-volume:
 ~~~
 {: .source}
