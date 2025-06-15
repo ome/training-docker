@@ -227,8 +227,9 @@ services:
       - "8080:80"
       - "8443:443"
     volumes:
-      - "./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro${VOLOPTS-}"
-      - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro${VOLOPTS-}"
+      - ./nginx/log:/var/log/nginx
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro${VOLOPTS-}
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro${VOLOPTS-}
       #- "./certs:/etc/nginx/ssl:ro${VOLOPTS-}"
 
 
