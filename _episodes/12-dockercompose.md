@@ -234,6 +234,11 @@ services:
 
 networks:
   omero-network:
+    # If it fails and your network has a non-standard MTU this may
+    # need to be set if auto-detection fails
+    driver_opts:
+        com.docker.network.driver.mtu: 1450
+
 
 volumes:
   omero-volume:
