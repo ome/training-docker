@@ -109,6 +109,40 @@ via the Desktop client.
 
 For more details please visit [import scenarios](https://omero.readthedocs.io/en/stable/sysadmins/import-scenarios.html)
 
+We will focus on the "in-place" import option, this will match a local setup
+i.e. an OMERO server running on a machine with a storage mounted. In our case a Ubuntu Virtual Machine with OMERO running using Docker containers and the mounted storage being ``/tmp``.
 
-Let's look at the "in-place" import option, this will mimic
+
+First we download a sample PNG image in the ``/tmp`` folder of the VM.
+
+~~~
+wget https://downloads.openmicroscopy.org/images/PNG/will/WesternBlots/Hela-frctns-DM1a-5.12.png -O /tmp/Hela-frctns-DM1a-5.12.png
+~~~
+{: .bash}
+
+
+Since we have mounted the ``/tmp`` folder of the VM into the ``/tmp`` folder of the Docker container
+
+
+The OMERO.server runs as the ``omero-server`` user within the Docker container.
+We need to access the container as that user
+
+Check the name(s) of the containers:
+
+~~~
+docker ps
+~~~
+{: .bash}
+
+Use the name of the Docker image running the OMERO.server e.g. ``ubuntu-omeroserver-1``.
+
+We will now perform an "in-place" import as the newly created user named ``user1``.
+
+~~~
+docker exec -ti -u omero-server  ubuntu-omeroserver-1 /opt/omero/server/venv3/bin/omero import --transfer=ln_s -s localhost -u user1 /tmp/Hela-frctns-DM1a-5.12.png
+~~~
+{: .bash}
+
+
+
 
