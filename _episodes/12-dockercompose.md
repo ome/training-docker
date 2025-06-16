@@ -210,7 +210,6 @@ services:
       - "4064:4064"
     volumes:
       - omero-volume:/OMERO
-      - /tmp:/tmp
 
   omeroweb:
     # This container uses the tag for the latest web release of OMERO 5
