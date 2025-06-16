@@ -197,7 +197,6 @@ services:
 
   omeroserver:
     # This container uses the tag for the latest omero server release of OMERO 5
-    # We mount the local ``/tmp`` folder into the ``/tmp`` folder in container
     image: "openmicroscopy/omero-server:5"
     environment:
       - CONFIG_omero_db_host=database
