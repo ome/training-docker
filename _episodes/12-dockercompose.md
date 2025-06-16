@@ -193,10 +193,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "./pgdata:/var/lib/postgresql/data"
+      - ./pgdata:/var/lib/postgresql/data
 
   omeroserver:
     # This container uses the tag for the latest omero server release of OMERO 5
+    # We mount the local ``/tmp`` folder into the ``/tmp`` folder in container
     image: "openmicroscopy/omero-server:5"
     environment:
       - CONFIG_omero_db_host=database
@@ -208,7 +209,8 @@ services:
       - "4063:4063"
       - "4064:4064"
     volumes:
-      - "omero-volume:/OMERO"
+      - omero-volume:/OMERO
+      - /tmp:/tmp
 
   omeroweb:
     # This container uses the tag for the latest web release of OMERO 5
