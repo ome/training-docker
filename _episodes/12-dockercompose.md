@@ -140,7 +140,7 @@ server {
 ~~~
 {: .bash}
 
-Add af file ``nginx.conf``:
+Add a file ``nginx.conf``:
 
 ~~~
 user  nginx;
