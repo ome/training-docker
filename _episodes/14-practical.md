@@ -8,7 +8,7 @@ objectives:
 - "Import an image using `in-place` import"
 keypoints:
 ---
-This lesson was used using Ubuntu Virtual Machine.
+This lesson was prepared using Ubuntu Virtual Machine.
 
 For **didactic purposes only**, we will mount the ``/tmp`` folder. Usually you will mount a directory
 corresponding to your data storage. You can set the permissions when mounting the volume
