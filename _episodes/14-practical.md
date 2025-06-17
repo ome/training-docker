@@ -1,5 +1,5 @@
 ---
-title: "Modify docker-compose to match a local setup"
+title: "Modify docker-compose to match a real-life setup"
 teaching: 20
 exercises: 20
 questions:
