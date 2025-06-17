@@ -1,5 +1,5 @@
 ---
-title: "Modify docker-compose to match a local setup"
+title: "Modify docker-compose to match a real-life setup"
 teaching: 20
 exercises: 20
 questions:
@@ -104,16 +104,16 @@ We now want to import an image.
 OMERO offers several import options:
 
 * Import by moving an image from one location to the server where OMERO is running. This is commonly done by users
-via the Desktop client.
-* Import "in-place". This means that a symbolic link between OMERO and the image's location i.e. the image does not move.
+via the Desktop (typically OMERO.insight) client.
+* Import "in-place". This means that a symbolic link between OMERO and the image's location is created, i.e. the image does neither move nor it is copied.
 
 For more details please visit [import scenarios](https://omero.readthedocs.io/en/stable/sysadmins/import-scenarios.html)
 
-We will focus on the "in-place" import option, this will match a local setup
+We will focus on the "in-place" import option, this will match a real-life setup in many imaging facilities,
 i.e. an OMERO server running on a machine with a storage mounted. In our case a Ubuntu Virtual Machine with OMERO running using Docker containers and the mounted storage being ``/tmp``.
 
 
-First we download a sample PNG image in the ``/tmp`` folder of the VM.
+First we download a sample PNG image into the ``/tmp`` folder of the VM.
 
 ~~~
 wget https://downloads.openmicroscopy.org/images/PNG/will/WesternBlots/Hela-frctns-DM1a-5.12.png -O /tmp/Hela-frctns-DM1a-5.12.png
@@ -121,7 +121,7 @@ wget https://downloads.openmicroscopy.org/images/PNG/will/WesternBlots/Hela-frct
 {: .bash}
 
 
-Since we have mounted the ``/tmp`` folder of the VM into the ``/tmp`` folder of the Docker container
+Since we have mounted the ``/tmp`` folder of the VM into the ``/tmp`` folder of the Docker container, the image will be visible also from inside the container.
 
 
 The OMERO.server runs as the ``omero-server`` user within the Docker container.
@@ -136,8 +136,8 @@ docker ps
 
 Use the name of the Docker image running the OMERO.server e.g. ``ubuntu-omeroserver-1``.
 
-We will now perform an "in-place" import as the newly created user named ``user1``.
-The ``omero-server`` user created when building the Docker image runs the OMERO.server.
+We will now perform an "in-place" import as the newly created OMERO user named ``user1``. `user1` exists only within OMERO, not at the level of the Operating System.
+The Operating System level user ``omero-server`` created when building the Docker image runs the OMERO.server.
 
 
 ~~~
