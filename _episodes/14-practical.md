@@ -134,7 +134,7 @@ docker ps
 ~~~
 {: .bash}
 
-Use the name of the Docker image running the OMERO.server e.g. ``ubuntu-omeroserver-1``.
+Use the name of the Docker container running the OMERO.server e.g. ``ubuntu-omeroserver-1``.
 
 We will now perform an "in-place" import as the newly created OMERO user named ``user1``.
 `user1` only exists within OMERO.
