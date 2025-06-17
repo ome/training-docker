@@ -137,6 +137,8 @@ docker ps
 Use the name of the Docker image running the OMERO.server e.g. ``ubuntu-omeroserver-1``.
 
 We will now perform an "in-place" import as the newly created user named ``user1``.
+The ``omero-server`` user created when building the Docker image runs the OMERO.server.
+
 
 ~~~
 docker exec -ti -u omero-server  ubuntu-omeroserver-1 /opt/omero/server/venv3/bin/omero import --transfer=ln_s -s localhost -u user1 /tmp/Hela-frctns-DM1a-5.12.png
