@@ -8,7 +8,7 @@ objectives:
 - "Import an image using `in-place` import"
 keypoints:
 ---
-This lesson was prepared using Ubuntu Virtual Machine.
+This lesson was prepared using an Ubuntu Virtual Machine.
 
 For **didactic purposes only**, we will mount the ``/tmp`` folder. Usually you will mount a directory
 corresponding to your data storage. You can set the permissions when mounting the volume
@@ -92,7 +92,7 @@ volumes:
 ~~~
 {: .bash}
 
-Run in detach mode i.e. you will be able to close the terminal and disconnect and the server will still be working.
+Run in detach mode i.e. you will be able to close the terminal and disconnect and the server will still be running.
 
 ~~~
 docker compose -f docker-compose.yml up -d
