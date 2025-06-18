@@ -13,6 +13,7 @@ This lesson was prepared using an Ubuntu Virtual Machine.
 For **didactic purposes only**, we will mount the ``/tmp`` folder. Usually you will mount a directory
 corresponding to your data storage. You can set the permissions when mounting the volume
 e.g. mount as read-only.
+We will create a folder in the Virtual Machine that we will map to the ``/OMERO`` folder in the virtual machine.
 
 First we need to stop the server. 
 ~~~
@@ -20,8 +21,10 @@ docker compose -f docker-compose.yml down
 ~~~
 {: .bash}
 
-Now we mount the folder ``/tmp`` in the Virtual Machine to the ``/tmp`` folder in the container.
+Let's create a folder ``omero`` in ``/home/ubuntu``. You will usually install it in a more permanent location e.g. ``/``
 
+Now we mount the folder ``/tmp`` in the Virtual Machine to the ``/tmp`` folder in the container.
+and mount the folder ``./omero`` in the Virtual Machine to the ``/OMERO`` folder in the container.
 ~~~
 services:
 
@@ -53,7 +56,7 @@ services:
       - "4063:4063"
       - "4064:4064"
     volumes:
-      - omero-volume:/OMERO
+      - ./omero:/OMERO
       - /tmp:/tmp
 
   omeroweb:
@@ -86,9 +89,6 @@ networks:
     driver_opts:
         com.docker.network.driver.mtu: 1450
 
-
-volumes:
-  omero-volume:
 ~~~
 {: .bash}
 
