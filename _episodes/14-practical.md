@@ -49,7 +49,7 @@ services:
     environment:
       - CONFIG_omero_db_host=database
       - CONFIG_omero_db_name=omero
-      - ROOTPASS=omero-root-password
+      - ROOTPASS=omero
     networks:
       - omero-network
     ports:
